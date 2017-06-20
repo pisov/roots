@@ -1,17 +1,17 @@
                 FUNCTION rtnewt(funcd,x1,x2,xacc)
                 IMPLICIT NONE
-                REAL, INTENT(IN) :: x1,x2,xacc
-                REAL :: rtnewt
+                DOUBLE PRECISION, INTENT(IN) :: x1,x2,xacc
+                DOUBLE PRECISION :: rtnewt
                 INTERFACE
                         SUBROUTINE funcd(x,fval,fderiv)
                         IMPLICIT NONE
-                        REAL, INTENT(IN) :: x
-                        REAL, INTENT(OUT) :: fval,fderiv
+                        DOUBLE PRECISION, INTENT(IN) :: x
+                        DOUBLE PRECISION, INTENT(OUT) :: fval,fderiv
                         END SUBROUTINE funcd
                 END INTERFACE
                 INTEGER, PARAMETER :: MAXIT=20
                 INTEGER :: j
-                REAL :: df,dx,f
+                DOUBLE PRECISION :: df,dx,f
                 rtnewt=0.5*(x1+x2)
                 do j=1,MAXIT
                         call funcd(rtnewt,f,df)

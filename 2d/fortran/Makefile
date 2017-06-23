@@ -1,6 +1,6 @@
 FC=gfortran
 CFLAGS=-O3
-LDFLAGS=
+LDFLAGS=-llapack
 EXE=newton.x
 SRC=newton.f90
 OBJ=$(SRC:.f90=.o)

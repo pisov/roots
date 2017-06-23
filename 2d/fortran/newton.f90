@@ -12,7 +12,7 @@ program newton
     end subroutine calc_jacobi
   end interface
 
-  integer, parameter :: n = 2, maxit = 10
+  integer, parameter :: n = 2, maxit = 50
   double precision, parameter :: eps = 1.d-5
 
   double precision, dimension(n) :: x, d, f
@@ -28,21 +28,21 @@ program newton
   it = 1
   do
     d(:) = func(x)
+    write(*,'(4F20.7)')(x(i),i=1,n),(d(i),i=1,n)
     call calc_jacobi(x, jmat)
-    !do i = 1, n
-    !  write(0,'(2F20.7)')(jmat(i,j),j=1,n)
-    !end do
     call dgesv(n, 1, jmat, n, work, d, n, info)
-    write(0,'(4F20.7)')(x(i),i=1,n),(d(i),i=1,n)
+
     x(:) = x(:) + d(:)
-    f(:) = func(x)
-    if ((it.gt.maxit).or.(info.ne.0)) exit
-!    write(0,'(4F20.7)')(x(i),i=1,n),(f(i),i=1,n)
+
+    if ((it.gt.maxit).or.(info.ne.0).or.(sqrt(dot_product(d, d)).lt.eps)) exit
     it = it + 1
   end do
   
   if (info.ne.0) then
     write(0,*)'Failed to find new step: ',info
+  else
+    f(:) = func(x)
+    write(*,'(4F20.7)')(x(i),i=1,n),(f(i),i=1,n)
   end if
 end program newton
 
@@ -66,8 +66,8 @@ subroutine calc_jacobi(x, jmat)
 
   n = size(x)
 
-  jmat(1, 1) = 1.d0 - x(1) 
-  jmat(1, 2) = 1.d0 - x(2)
-  jmat(2, 1) = exp(-x(2))
-  jmat(2, 2) = -x(1)*exp(-x(2))
+  jmat(1, 1) = x(1) - 1.d0
+  jmat(1, 2) = x(2) - 1.d0
+  jmat(2, 1) = -exp(-x(2))
+  jmat(2, 2) = x(1)*exp(-x(2))
 end subroutine calc_jacobi
